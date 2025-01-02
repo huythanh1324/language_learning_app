@@ -6,4 +6,5 @@
     <color name="grey">#898989</color>
     <color name="card_vietnamese">#FFA726</color>
     <color name="card_english">#66BB6A</color>
+    <color name="card_empty">#E0E0E0</color>
 </resources>
