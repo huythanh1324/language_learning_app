@@ -4,60 +4,85 @@ package com.example.languagelearningapp.activity
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.languagelearningapp.R
+import com.example.languagelearningapp.databinding.ActivityIntroBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class IntroActivity : AppCompatActivity() {
+
+    private lateinit var binding : ActivityIntroBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var reference: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_intro)
+        binding = ActivityIntroBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val imageView1: ImageView = findViewById(R.id.imageView1)
-        val imageView2: ImageView = findViewById(R.id.imageView2)
-        val imageView3: ImageView = findViewById(R.id.imageView3)
-        val textView: TextView = findViewById(R.id.textView)
-        val  loginBtn : Button  = findViewById(R.id.login_btn)
 
-        // Set initial alpha to 0 (invisible) for the fade-in effect
-        imageView1.alpha = 0f
-        imageView2.alpha = 0f
-        imageView3.alpha = 0f
-        textView.alpha = 0f
-        loginBtn.alpha = 0f
+        val loginBtn = binding.loginBtn
+        val signUpRedirectText = binding.signUpRedirectText
+        val email =  binding.loginEmail
+        val password = binding.loginPassword
 
-        // Create ObjectAnimator to animate the alpha property (fade-in effect)
-        val fadeInDuration = 5000L // Duration of 1 second
+        auth = FirebaseAuth.getInstance()
 
-        val fadeInImageView1 = ObjectAnimator.ofFloat(imageView1, "alpha", 0f, 1f)
-        fadeInImageView1.duration = fadeInDuration
-
-        val fadeInImageView2 = ObjectAnimator.ofFloat(imageView2, "alpha", 0f, 1f)
-        fadeInImageView2.duration = fadeInDuration
-
-        val fadeInImageView3 = ObjectAnimator.ofFloat(imageView3, "alpha", 0f, 1f)
-        fadeInImageView3.duration = fadeInDuration
-
-        val fadeInTextView = ObjectAnimator.ofFloat(textView, "alpha", 0f, 1f)
-        fadeInTextView.duration = fadeInDuration
-
-        val fadeInLoginBtn = ObjectAnimator.ofFloat(loginBtn, "alpha", 0f, 1f)
-        fadeInLoginBtn.duration = fadeInDuration
-
-        // Start the animations
-        fadeInImageView1.start()
-        fadeInImageView2.start()
-        fadeInImageView3.start()
-        fadeInTextView.start()
-        fadeInLoginBtn.start()
+        database = FirebaseDatabase.getInstance("https://language-learning-c682b-default-rtdb.asia-southeast1.firebasedatabase.app/")
 
         // set onClick Listener for login button
         loginBtn.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+
+            if (email.text.toString().isNotEmpty() && password.text.toString().isNotEmpty()){
+
+                auth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnCompleteListener({
+                    if(it.isSuccessful){
+
+                        val userId = auth.currentUser?.uid
+                        if (userId != null){
+                            val intent = Intent(this, MainActivity::class.java)
+                            reference = database.getReference("users/$userId")
+
+                            reference.get().addOnCompleteListener{ dbtask ->
+                                if (dbtask.isSuccessful){
+                                    val dataSnapshot = dbtask.result
+                                    val name  = dataSnapshot.child("name").getValue(String::class.java)
+                                    if (name != null) {
+                                        intent.putExtra("name",name)
+                                    }
+                                    startActivity(intent)
+                                }else{
+                                    Toast.makeText(this, "Failed to retrieve user data.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                        }
+
+                    }else {
+                        Toast.makeText(this,it.exception.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+            }
+
+        }
+
+        signUpRedirectText.setOnClickListener {
+            val intent = Intent(this,SignUpActivity::class.java)
             startActivity(intent)
         }
     }
