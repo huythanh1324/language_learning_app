@@ -4,9 +4,11 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+
 android {
     namespace = "com.example.languagelearningapp"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.languagelearningapp"
@@ -37,7 +39,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
+
 
 dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -51,7 +55,47 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.androidx.espresso.intents)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Các thư viện kiểm thử AndroidX
+    testImplementation (libs.androidx.junit)
+    testImplementation (libs.androidx.core.v170)
+    testImplementation (libs.runner)
+
+    // Mockito cho mock đối tượng trong unit test
+    testImplementation (libs.mockito.core)
+    // Mockito core cho kiểm thử thiết bị
+
+
+    // Mockito inline
+    androidTestImplementation (libs.mockito.inline)
+    // JUnit cho unit test
+
+    testImplementation (libs.mockito.junit.jupiter)
+
+    // Các thư viện kiểm thử khác
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.core.v150)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.androidx.espresso.intents)
+
+
 }

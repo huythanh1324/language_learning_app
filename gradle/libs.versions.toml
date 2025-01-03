@@ -1,5 +1,7 @@
 [versions]
 agp = "8.7.0"
+androidxCore = "1.5.0"
+coreVersion = "1.7.0"
 kotlin = "1.9.24"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -9,14 +11,22 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+mockitoCore = "5.14.2"
+mockitoInline = "5.5.0"
 navigationFragmentKtx = "2.8.5"
 navigationUiKtx = "2.8.5"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
+core = "1.6.1"
+runner = "1.7.0"
+espressoIntents = "3.6.1"
+junitJupiter = "5.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-v150 = { module = "androidx.test:core", version.ref = "androidxCore" }
+androidx-core-v170 = { module = "androidx.test:core", version = "1.6.1" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -28,6 +38,13 @@ androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navi
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-inline = { module = "org.mockito:mockito-inline", version = "5.2.0" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitoInline" }
+runner = { module = "androidx.test:runner", version = "1.6.2" }
+androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
