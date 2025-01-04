@@ -51,4 +51,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.espresso.core.v340)
+
+    // Hamcrest for matchers like containsString
+    androidTestImplementation (libs.hamcrest.library)
+
+    // Espresso-contrib (optional, if you need other advanced features)
+    androidTestImplementation (libs.androidx.espresso.contrib)
 }
