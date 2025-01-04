@@ -52,4 +52,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.espresso.intents)
+    // Espresso dependencies for UI testing
+    androidTestImplementation (libs.androidx.espresso.core.v340)
+    androidTestImplementation (libs.espresso.contrib) // (optional, for additional features)
+
+    // Idling Resource dependency
+    androidTestImplementation (libs.idling.concurrent)
+    androidTestImplementation (libs.androidx.junit)
+    androidTestImplementation (libs.androidx.runner)
 }
