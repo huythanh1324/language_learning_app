@@ -2,6 +2,7 @@
 agp = "8.7.0"
 androidxCore = "1.5.0"
 coreVersion = "1.7.0"
+espressoCoreVersion = "3.5.1"
 kotlin = "1.9.24"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -27,6 +28,7 @@ junitJupiter = "5.8.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-v150 = { module = "androidx.test:core", version.ref = "androidxCore" }
 androidx-core-v170 = { module = "androidx.test:core", version = "1.6.1" }
+androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

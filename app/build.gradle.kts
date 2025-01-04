@@ -86,6 +86,7 @@ dependencies {
     // JUnit cho unit test
 
     testImplementation (libs.mockito.junit.jupiter)
+    androidTestImplementation (libs.androidx.espresso.core.v351)
 
     // Các thư viện kiểm thử khác
     testImplementation(libs.junit)
