@@ -42,6 +42,9 @@ public class QuizActivityTest {
         Thread.sleep(2000);
         onView(withId(R.id.resultText))
                 .check(matches(withSubstring("Incorrect")));
-
+    }
+    @Test
+    public void checkBackToMenuBtn () {
+        onView(withId(R.id.backToMenuButton)).perform(click());
     }
 }
