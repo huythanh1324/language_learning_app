@@ -182,26 +182,37 @@ class FlashCardActivity : AppCompatActivity() {
     }
 
     private fun deleteFlashCard() {
-//        val wordToDelete = deleteWordInput.text.toString().trim()
-//
-//        if (wordToDelete.isNotEmpty()) {
-//            val cardToDelete = flashcards.find { it.first.equals(wordToDelete, ignoreCase = true) }
-//            cardToDelete?.let {
-//                flashcards.remove(it)
-//                deleteWordInput.text.clear()
-//                if (flashcards.isNotEmpty()) {
-//                    // Reset to the first card if it's deleted
-//                    currentCardIndex = 0
-//                    updateFlashCard()
-//                } else {
-//                    // If no cards are left
-//                    flashCardText.text = "No flashcards available"
-//                    flashCard.setCardBackgroundColor(
-//                        ContextCompat.getColor(this, R.color.card_empty)
-//                    )
-//                }
-//            }
-//        }
+        val wordToDelete = deleteWordInput.text.toString().trim()
+
+        if (wordToDelete.isNotEmpty()) {
+            // Find the flashcard to delete
+            val cardToDelete = flashcards.find { it.first.equals(wordToDelete, ignoreCase = true) }
+            if (cardToDelete != null) {
+                // Remove the flashcard locally
+                flashcards.remove(cardToDelete)
+
+                // Update the database
+                reference.setValue(flashcards).addOnSuccessListener {
+                    Toast.makeText(this, "Flashcard deleted successfully", Toast.LENGTH_SHORT).show()
+                    deleteWordInput.text.clear()
+                    if (flashcards.isNotEmpty()) {
+                        currentCardIndex = 0
+                        updateFlashCard()
+                    } else {
+                        flashCardText.text = "No flashcards available"
+                        flashCard.setCardBackgroundColor(
+                            ContextCompat.getColor(this, R.color.card_empty)
+                        )
+                    }
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Failed to delete flashcard: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Flashcard not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Enter a word to delete", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroy() {
