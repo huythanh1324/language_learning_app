@@ -1,20 +1,26 @@
 package com.example.languagelearningapp.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.languagelearningapp.R
+import com.example.languagelearningapp.adapter.FlashCardAdapter
+import com.example.languagelearningapp.adapter.MeaningAdapter
+import com.example.languagelearningapp.databinding.ActivityFlashCardListBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class FlashCardListActivity : AppCompatActivity() {
 
-    private lateinit var flashCardListView: ListView
     private lateinit var backToFlashCardButton: Button
 
+    private lateinit var binding : ActivityFlashCardListBinding
+    private lateinit var adapter: FlashCardAdapter
     private lateinit var database: FirebaseDatabase
     private lateinit var reference: DatabaseReference
     private lateinit var userId: String
@@ -22,11 +28,11 @@ class FlashCardListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_flash_card_list)
+        binding = ActivityFlashCardListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Initialize views
-        flashCardListView = findViewById(R.id.flashCardListView)
-        backToFlashCardButton = findViewById(R.id.backToFlashCardButton)
+
+        backToFlashCardButton = binding.backToFlashCardButton
 
         // Get user ID and database reference
         val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
@@ -36,6 +42,12 @@ class FlashCardListActivity : AppCompatActivity() {
 
         // Load flashcards from database
         loadFlashcards()
+
+
+
+        adapter = FlashCardAdapter(flashcards,::editHandler,::deleteHandler)
+        binding.flashcardItemRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.flashcardItemRecyclerView.adapter = adapter
 
         // Back button to return to FlashCardActivity
         backToFlashCardButton.setOnClickListener { finish() }
@@ -55,31 +67,30 @@ class FlashCardListActivity : AppCompatActivity() {
                             null
                         }
                     }.toMutableList()
-
-                    // Set up ListView with flashcards
-                    val adapter = ArrayAdapter(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        flashcards.map { "${it.first} - ${it.second}" }
-                    )
-                    flashCardListView.adapter = adapter
-
-                    // Handle item removal on long click
-                    flashCardListView.setOnItemLongClickListener { _, _, position, _ ->
-                        val cardToDelete = flashcards[position]
-                        flashcards.removeAt(position)
-                        reference.setValue(flashcards).addOnSuccessListener {
-                            Toast.makeText(this, "Flashcard deleted", Toast.LENGTH_SHORT).show()
-                            adapter.notifyDataSetChanged()
-                        }.addOnFailureListener {
-                            Toast.makeText(this, "Failed to delete flashcard: ${it.message}", Toast.LENGTH_SHORT).show()
-                        }
-                        true
-                    }
+                    adapter.updateNewData(flashcards)
                 }
             } else {
                 Toast.makeText(this, "Failed to load flashcards: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    fun editHandler(position: Int,englishText: String, vietnameseText: String) : Unit{
+        flashcards[position] = Pair(englishText,vietnameseText)
+        reference.setValue(flashcards).addOnSuccessListener {
+            adapter.updateNewData(flashcards)
+        }.addOnFailureListener {
+            println("Failed to edit flashcard: ${it.message}")
+        }
+
+    }
+
+    fun deleteHandler(position: Int) : Unit{
+        flashcards.removeAt(position)
+        reference.setValue(flashcards).addOnSuccessListener {
+            adapter.updateNewData(flashcards)
+        }.addOnFailureListener {
+            println("Failed to delete flashcard: ${it.message}")
         }
     }
 }
