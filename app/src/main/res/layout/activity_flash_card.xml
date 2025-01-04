@@ -17,19 +17,39 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="Main Menu"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF" />
+        android:backgroundTint="#6600EE"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 
-    <!-- Card View for the flashcard -->
+    <!-- Title Section -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:gravity="center"
+        android:text="Flash Card Game"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:background="#4CAF50"
+        android:paddingHorizontal="16dp"
+        android:elevation="4dp" />
+
+    <!-- Card View for Flashcard -->
     <androidx.cardview.widget.CardView
         android:id="@+id/flashCard"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_below="@id/backButton"
-        android:layout_margin="16dp"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="16dp"
         android:padding="16dp"
-        android:elevation="4dp"
-        app:cardCornerRadius="16dp">
+        android:elevation="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="#FFFFFF">
 
         <TextView
             android:id="@+id/flashCardText"
@@ -43,7 +63,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Input field and Add button -->
+    <!-- Input Field and Add Button -->
     <LinearLayout
         android:id="@+id/inputContainer"
         android:layout_width="match_parent"
@@ -58,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="English"
-            android:padding="8dp"
+            android:padding="12dp"
             android:background="@android:drawable/edit_text"
             android:textColor="#333333" />
 
@@ -68,19 +88,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Vietnamese"
-            android:padding="8dp"
+            android:padding="12dp"
+            android:layout_marginStart="8dp"
             android:background="@android:drawable/edit_text"
-            android:textColor="#333333"
-            android:layout_marginStart="8dp" />
+            android:textColor="#333333" />
 
         <Button
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:backgroundTint="#6200EE"
+            android:backgroundTint="#4CAF50"
             android:text="Add"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Delete Word Section -->
@@ -98,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Word to delete"
-            android:padding="8dp"
+            android:padding="12dp"
             android:background="@android:drawable/edit_text"
             android:textColor="#333333" />
 
@@ -107,12 +128,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:backgroundTint="#FF0000"
+            android:backgroundTint="#FF5722"
             android:text="Delete"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Buttons at the bottom (Next and View Flashcard List) -->
+    <!-- Bottom Buttons: Next Word and View Flashcard List -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,14 +151,17 @@
             android:backgroundTint="#008000"
             android:text="Next Word"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/viewFlashCardListButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="goToFlashCardList"
-            android:text="View Flashcard List" />
+            android:backgroundTint="#6200EE"
+            android:text="View Flashcard List"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
-
 </RelativeLayout>

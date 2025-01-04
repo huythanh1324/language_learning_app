@@ -1,5 +1,8 @@
 package com.example.languagelearningapp.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +12,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -31,10 +33,9 @@ class FlashCardActivity : AppCompatActivity() {
     private lateinit var vietnameseInput: EditText
     private lateinit var deleteWordInput: EditText
 
-
     private lateinit var database: FirebaseDatabase
     private lateinit var reference: DatabaseReference
-    private lateinit var binding : ActivityFlashCardBinding
+    private lateinit var binding: ActivityFlashCardBinding
 
     private var flashcards: MutableList<Pair<String, String>> = mutableListOf()
     private var currentCardIndex = 0
@@ -46,7 +47,7 @@ class FlashCardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding =  ActivityFlashCardBinding.inflate(layoutInflater)
+        binding = ActivityFlashCardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // get user uid
@@ -73,7 +74,10 @@ class FlashCardActivity : AppCompatActivity() {
 
         // Set up button listeners
         backButton.setOnClickListener { finish() }
-        nextButton.setOnClickListener { moveToNextCard() }
+        nextButton.setOnClickListener {
+            moveToNextCard()
+            applyFlipAnimation() // Add the flip animation when moving to the next card
+        }
         addButton.setOnClickListener { addNewFlashCard() }
         viewFlashCardListButton.setOnClickListener {
             val intent = Intent(this, FlashCardListActivity::class.java)
@@ -85,8 +89,8 @@ class FlashCardActivity : AppCompatActivity() {
         handler = Handler(Looper.getMainLooper())
         switchCardRunnable = object : Runnable {
             override fun run() {
-                toggleCard()
-                handler.postDelayed(this, 5000)  // Switch every 5 seconds
+                applyFlipAnimation() // Flip the card when auto-switching
+                handler.postDelayed(this, 5000) // Switch every 5 seconds
             }
         }
 
@@ -111,10 +115,9 @@ class FlashCardActivity : AppCompatActivity() {
                 }
                 updateFlashCard()
             } else {
-                Toast.makeText(this,"Failed to load flashcards: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to load flashcards: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun updateFlashCard() {
@@ -164,12 +167,11 @@ class FlashCardActivity : AppCompatActivity() {
     }
 
     private fun addNewFlashCard() {
-
         val englishWord = englishInput.text.toString().trim()
         val vietnameseWord = vietnameseInput.text.toString().trim()
-        val pairData = Pair(englishWord,vietnameseWord)
+        val pairData = Pair(englishWord, vietnameseWord)
         flashcards.add(pairData)
-        if(englishWord.isNotEmpty() && vietnameseWord.isNotEmpty()){
+        if (englishWord.isNotEmpty() && vietnameseWord.isNotEmpty()) {
             reference.setValue(flashcards).addOnSuccessListener {
                 englishInput.text.clear()
                 vietnameseInput.text.clear()
@@ -178,7 +180,6 @@ class FlashCardActivity : AppCompatActivity() {
                 println("Failed to add flashcard: ${it.message}")
             }
         }
-
     }
 
     private fun deleteFlashCard() {
@@ -213,6 +214,27 @@ class FlashCardActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Enter a word to delete", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun applyFlipAnimation() {
+        if (flashcards.isEmpty()) {
+            return // Do nothing if there are no flashcards
+        }
+
+        val flipAnimator = ObjectAnimator.ofFloat(flashCard, "rotationY", 0f, 90f)
+        flipAnimator.duration = 250
+        flipAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                // Toggle the card text after the first half of the flip
+                toggleCard()
+
+                // Create the second half of the flip
+                val flipBackAnimator = ObjectAnimator.ofFloat(flashCard, "rotationY", -90f, 0f)
+                flipBackAnimator.duration = 250
+                flipBackAnimator.start()
+            }
+        })
+        flipAnimator.start()
     }
 
     override fun onDestroy() {
