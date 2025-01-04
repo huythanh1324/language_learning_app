@@ -55,4 +55,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.espresso.core)
+
+    // Espresso Intents
+    androidTestImplementation (libs.androidx.espresso.intents)
+
+    // For testing dependencies
+    androidTestImplementation (libs.androidx.junit)
+    androidTestImplementation (libs.androidx.rules)
 }
