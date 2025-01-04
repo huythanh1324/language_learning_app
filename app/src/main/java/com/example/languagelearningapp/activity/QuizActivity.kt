@@ -2,6 +2,7 @@ package com.example.languagelearningapp.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -13,13 +14,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.languagelearningapp.R
+import com.example.languagelearningapp.databinding.ActivityQuizBinding
 import com.example.languagelearningapp.model.WordResult
 import com.example.languagelearningapp.retrofit.RetrofitInstance
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import kotlin.random.Random
 
 class QuizActivity : AppCompatActivity() {
+
+    private lateinit var binding : ActivityQuizBinding
+    private lateinit var database: FirebaseDatabase
+    private lateinit var reference: DatabaseReference
+
     private lateinit var definitionText: TextView
     private lateinit var answerEditText: EditText
     private lateinit var checkButton: Button
@@ -27,43 +37,50 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var resultText: TextView
     private lateinit var scoreText: TextView
 
+    private lateinit var wordList : List<String>
+
     private var currentQuestion: WordResult? = null
     private var currentDefinition: String? = null
     private var correctWord: String? = null
     private var score = 0
 
-    private val wordList = listOf(
-        "hello", "world", "language", "android", "programming", "app", "java",
-        "kotlin", "dictionary", "example", "code", "study", "computer",
-        "development", "mobile", "tutorial", "internet", "software", "design",
-        "education"
-    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_quiz)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding =  ActivityQuizBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // connect to db and get word list
+        database = FirebaseDatabase.getInstance("https://language-learning-c682b-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        val category = intent.getStringExtra("category_quiz")
+        reference = database.getReference("quiz/$category")
+        reference.get().addOnCompleteListener{ dbtask ->
+            if (dbtask.isSuccessful){
+                val result = dbtask.result
+                if (result != null && result.exists()) {
+                    wordList = result.children.mapNotNull { it.getValue(String::class.java) }
+                    // Load random meaning from the API
+                    loadRandomMeaning()
+                } else {
+                    Toast.makeText(this, "No words available in this category", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(this, "Failed to retrieve data.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Initialize UI elements
-        definitionText = findViewById(R.id.definitionText)
-        answerEditText = findViewById(R.id.answerEditText)
-        checkButton = findViewById(R.id.checkButton)
-        nextButton = findViewById(R.id.nextButton)
-        resultText = findViewById(R.id.resultText)
-        scoreText = findViewById(R.id.scoreText)
+        definitionText = binding.definitionText
+        answerEditText = binding.answerEditText
+        checkButton = binding.checkButton
+        nextButton = binding.nextButton
+        resultText = binding.resultText
+        scoreText = binding.scoreText
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        // Load random meaning from the API
-        loadRandomMeaning()
+
+
+
 
         // Check the user's input
         checkButton.setOnClickListener {

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".activity.QuizActivity">
@@ -91,9 +92,9 @@
         android:text="Next"
         android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/resultText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/resultText" />
 
     <Button
         android:id="@+id/backToMenuButton"

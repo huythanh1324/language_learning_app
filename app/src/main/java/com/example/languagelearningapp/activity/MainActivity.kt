@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         quizBtn.setOnClickListener {
-            val intent = Intent(this, QuizActivity::class.java)
+            val intent = Intent(this, QuizCategory::class.java)
             startActivity(intent)
         }
         translateBtn.setOnClickListener {

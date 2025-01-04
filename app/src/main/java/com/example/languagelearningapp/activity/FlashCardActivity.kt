@@ -4,13 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.example.languagelearningapp.R
+import com.example.languagelearningapp.databinding.ActivityFlashCardBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class FlashCardActivity : AppCompatActivity() {
 
@@ -25,15 +31,12 @@ class FlashCardActivity : AppCompatActivity() {
     private lateinit var vietnameseInput: EditText
     private lateinit var deleteWordInput: EditText
 
-    companion object {
-        val flashcards = mutableListOf(
-            Pair("Hello", "Xin chào"),
-            Pair("Thank You", "Cảm ơn"),
-            Pair("Goodbye", "Tạm biệt"),
-            Pair("Please", "Làm ơn")
-        )
-    }
 
+    private lateinit var database: FirebaseDatabase
+    private lateinit var reference: DatabaseReference
+    private lateinit var binding : ActivityFlashCardBinding
+
+    private var flashcards: MutableList<Pair<String, String>> = mutableListOf()
     private var currentCardIndex = 0
     private var showingQuestion = true
 
@@ -42,19 +45,31 @@ class FlashCardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_flash_card)
+
+        binding =  ActivityFlashCardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // get user uid
+        val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val userId = sharedPreferences.getString("uid", "default uid")
+        // Connect to db
+        database = FirebaseDatabase.getInstance("https://language-learning-c682b-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        reference = database.getReference("users/$userId/flashcards")
+
+        // load all flashcards
+        loadFlashcards()
 
         // Initialize views
-        flashCardText = findViewById(R.id.flashCardText)
-        flashCard = findViewById(R.id.flashCard)
-        nextButton = findViewById(R.id.nextButton)
-        backButton = findViewById(R.id.backButton)
-        addButton = findViewById(R.id.addButton)
-        viewFlashCardListButton = findViewById(R.id.viewFlashCardListButton)
-        englishInput = findViewById(R.id.englishInput)
-        vietnameseInput = findViewById(R.id.vietnameseInput)
-        deleteButton = findViewById(R.id.deleteButton)
-        deleteWordInput = findViewById(R.id.deleteWordInput)
+        flashCardText = binding.flashCardText
+        flashCard = binding.flashCard
+        nextButton = binding.nextButton
+        backButton = binding.backButton
+        addButton = binding.addButton
+        viewFlashCardListButton = binding.viewFlashCardListButton
+        englishInput = binding.englishInput
+        vietnameseInput = binding.vietnameseInput
+        deleteButton = binding.deleteButton
+        deleteWordInput = binding.deleteWordInput
 
         // Set up button listeners
         backButton.setOnClickListener { finish() }
@@ -76,8 +91,30 @@ class FlashCardActivity : AppCompatActivity() {
         }
 
         // Start the flashcard logic
-        updateFlashCard()
         handler.postDelayed(switchCardRunnable, 5000) // Start auto-switch after 5 seconds
+    }
+
+    private fun loadFlashcards() {
+        reference.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val result = task.result
+                if (result.exists()) {
+                    flashcards = result.children.mapNotNull { snapshot ->
+                        val english = snapshot.child("first").getValue(String::class.java)
+                        val vietnamese = snapshot.child("second").getValue(String::class.java)
+                        if (english != null && vietnamese != null) {
+                            english to vietnamese
+                        } else {
+                            null
+                        }
+                    }.toMutableList()
+                }
+                updateFlashCard()
+            } else {
+                Toast.makeText(this,"Failed to load flashcards: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun updateFlashCard() {
@@ -93,6 +130,8 @@ class FlashCardActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.card_empty)
             ) // Set a different color for empty state
         }
+
+        Log.d("current card index", "$currentCardIndex, flash card size: ${flashcards.size}")
     }
 
     private fun toggleCard() {
@@ -125,37 +164,44 @@ class FlashCardActivity : AppCompatActivity() {
     }
 
     private fun addNewFlashCard() {
+
         val englishWord = englishInput.text.toString().trim()
         val vietnameseWord = vietnameseInput.text.toString().trim()
-
-        if (englishWord.isNotEmpty() && vietnameseWord.isNotEmpty()) {
-            flashcards.add(Pair(englishWord, vietnameseWord))
-            englishInput.text.clear()
-            vietnameseInput.text.clear()
+        val pairData = Pair(englishWord,vietnameseWord)
+        flashcards.add(pairData)
+        if(englishWord.isNotEmpty() && vietnameseWord.isNotEmpty()){
+            reference.setValue(flashcards).addOnSuccessListener {
+                englishInput.text.clear()
+                vietnameseInput.text.clear()
+                loadFlashcards()
+            }.addOnFailureListener {
+                println("Failed to add flashcard: ${it.message}")
+            }
         }
+
     }
 
     private fun deleteFlashCard() {
-        val wordToDelete = deleteWordInput.text.toString().trim()
-
-        if (wordToDelete.isNotEmpty()) {
-            val cardToDelete = flashcards.find { it.first.equals(wordToDelete, ignoreCase = true) }
-            cardToDelete?.let {
-                flashcards.remove(it)
-                deleteWordInput.text.clear()
-                if (flashcards.isNotEmpty()) {
-                    // Reset to the first card if it's deleted
-                    currentCardIndex = 0
-                    updateFlashCard()
-                } else {
-                    // If no cards are left
-                    flashCardText.text = "No flashcards available"
-                    flashCard.setCardBackgroundColor(
-                        ContextCompat.getColor(this, R.color.card_empty)
-                    )
-                }
-            }
-        }
+//        val wordToDelete = deleteWordInput.text.toString().trim()
+//
+//        if (wordToDelete.isNotEmpty()) {
+//            val cardToDelete = flashcards.find { it.first.equals(wordToDelete, ignoreCase = true) }
+//            cardToDelete?.let {
+//                flashcards.remove(it)
+//                deleteWordInput.text.clear()
+//                if (flashcards.isNotEmpty()) {
+//                    // Reset to the first card if it's deleted
+//                    currentCardIndex = 0
+//                    updateFlashCard()
+//                } else {
+//                    // If no cards are left
+//                    flashCardText.text = "No flashcards available"
+//                    flashCard.setCardBackgroundColor(
+//                        ContextCompat.getColor(this, R.color.card_empty)
+//                    )
+//                }
+//            }
+//        }
     }
 
     override fun onDestroy() {

@@ -54,6 +54,13 @@ class IntroActivity : AppCompatActivity() {
 
                         val userId = auth.currentUser?.uid
                         if (userId != null){
+
+                            // save uid in SharedPreferences
+                            val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putString("uid", userId)
+                            editor.apply()
+
                             val intent = Intent(this, MainActivity::class.java)
                             reference = database.getReference("users/$userId")
 
