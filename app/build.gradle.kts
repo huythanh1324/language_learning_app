@@ -59,23 +59,19 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core)
     testImplementation(libs.androidx.junit)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
-    testImplementation(libs.androidx.core)
     testImplementation(libs.junit.jupiter)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation (libs.androidx.espresso.core)
 
     // Espresso Intents
     androidTestImplementation (libs.androidx.espresso.intents)
-
+    androidTestImplementation (libs.androidx.espresso.core.v340)
+    androidTestImplementation (libs.espresso.contrib)
     // For testing dependencies
     androidTestImplementation (libs.androidx.junit)
     androidTestImplementation (libs.androidx.rules)
+
+    // Idling Resource dependency
+    androidTestImplementation (libs.idling.concurrent)
+    androidTestImplementation (libs.androidx.runner)
 }

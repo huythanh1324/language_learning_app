@@ -94,6 +94,7 @@
         app:layout_constraintBottom_toTopOf="@+id/output_textview"
         app:layout_constraintEnd_toEndOf="@+id/input_edit_text"
         app:layout_constraintStart_toStartOf="@+id/input_edit_text"
-        app:layout_constraintTop_toBottomOf="@+id/input_edit_text" />
+        app:layout_constraintTop_toBottomOf="@+id/input_edit_text"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

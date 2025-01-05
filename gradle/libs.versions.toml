@@ -22,16 +22,20 @@ firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
 rules = "1.5.0"
 core = "1.6.1"
-runner = "1.7.0"
+runner = "1.4.0"
 junitJupiter = "5.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoIntents" }
+androidx-espresso-core-v340 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
 androidx-core-v150 = { module = "androidx.test:core", version.ref = "androidxCore" }
 androidx-core-v170 = { module = "androidx.test:core", version = "1.6.1" }
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+idling-concurrent = { module = "androidx.test.espresso.idling:idling-concurrent", version.ref = "idlingConcurrent" }
+espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoContrib" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
