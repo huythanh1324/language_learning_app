@@ -8,6 +8,7 @@ android {
     namespace = "com.example.languagelearningapp"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.example.languagelearningapp"
         minSdk = 24
@@ -37,7 +38,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
+
 
 dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -52,7 +55,19 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.androidx.espresso.intents)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation (libs.androidx.espresso.core)

@@ -11,6 +11,21 @@
       <SelectionState runConfigName="DeleteACard()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+        <SelectionState runConfigName="testSignUpFail()">
+            <option name="selectionMode" value="DROPDOWN" />
+        </SelectionState>
+        <SelectionState runConfigName="testSignUpFailWithValidEmail()">
+            <option name="selectionMode" value="DROPDOWN" />
+        </SelectionState>
+        <SelectionState runConfigName="testSignUpSuccessNavigates()">
+            <option name="selectionMode" value="DROPDOWN" />
+        </SelectionState>
+        <SelectionState runConfigName="TestSearchSuccess()">
+            <option name="selectionMode" value="DROPDOWN" />
+        </SelectionState>
+        <SelectionState runConfigName="TestSearchFail()">
+            <option name="selectionMode" value="DROPDOWN" />
+        </SelectionState>
     </selectionStates>
   </component>
 </project>
